@@ -64,7 +64,7 @@ def scrape_instagram(tags: List[str], total_count: int=50, existing: set=None):
 def main(tags, total_count, should_continue):
     def _single_tag_processing(tag, total_count, existing_links, start):
         os.makedirs(f'data/{tag}', exist_ok=True)
-        with open(f'data/{tag}/data.csv', 'a' if existing_links else 'w', newline='') as csvfile:
+        with open(f'data/{tag}/data.csv', 'a' if existing_links else 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             for count, (url, caption, hashtags, mentions) in enumerate(scrape_instagram_tag(
                 tag, total_count, existing_links), start):
@@ -89,7 +89,7 @@ def main(tags, total_count, should_continue):
         existing_links = set()
         start = 0
         if os.path.exists(f'data/{tag}/data.csv') and should_continue:
-            with open(f'data/{tag}/data.csv', newline='') as csvfile:
+            with open(f'data/{tag}/data.csv', newline='', encoding='utf-8') as csvfile:
                 reader = csv.reader(csvfile)
                 for i, row in enumerate(reader):
                     existing_links.add(row[1])
