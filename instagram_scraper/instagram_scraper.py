@@ -10,7 +10,6 @@ import requests
 from requests_html import HTMLSession
 
 
-
 # Source: http://blog.jstassen.com/2016/03/code-regex-for-instagram-username-and-hashtags/
 REGEXES = {
     'hashtag': re.compile('(?:#)([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)'),
@@ -61,13 +60,14 @@ def scrape_instagram(tags: List[str], total_count: int=50, existing: set=None):
     for tag in tags:
         yield from scrape_instagram_tag(tag, total_count)
 
+
 def main(tags, total_count, should_continue):
     def _single_tag_processing(tag, total_count, existing_links, start):
         os.makedirs(f'data/{tag}', exist_ok=True)
         with open(f'data/{tag}/data.csv', 'a' if existing_links else 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             for count, (url, caption, hashtags, mentions) in enumerate(scrape_instagram_tag(
-                tag, total_count, existing_links), start):
+                    tag, total_count, existing_links), start):
 
                 try:
                     req = requests.get(url)
@@ -83,7 +83,8 @@ def main(tags, total_count, should_continue):
                         ', '.join(hashtags),
                         ', '.join(mentions)
                     ])
-                    print(f'[{tag}] downloaded {url} as {count}.jpg in data/{tag}')
+                    print(
+                        f'[{tag}] downloaded {url} as {count}.jpg in data/{tag}')
 
     for tag in tags:
         existing_links = set()
@@ -96,7 +97,8 @@ def main(tags, total_count, should_continue):
                 start = i + 1
         _single_tag_processing(tag, total_count, existing_links, start)
 
-if __name__ == '__main__':
+
+def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('--tags', '-t', nargs='+',
                         help='Tags to scrape images from')
@@ -111,3 +113,7 @@ if __name__ == '__main__':
     assert args.tags, "Enter tags to scrape! Use --tags option, see help."
     assert args.count, "Enter total number of images to scrape using --count option, see help."
     main(args.tags, args.count, args.cont)
+
+
+if __name__ == '__main__':
+    run()
