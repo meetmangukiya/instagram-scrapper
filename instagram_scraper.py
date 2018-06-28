@@ -2,14 +2,10 @@ import argparse
 import csv
 import os
 import re
-import sys
-import threading
-from typing import Callable, List
+from typing import List
 
 import requests
 from requests_html import HTMLSession
-
-
 
 # Source: http://blog.jstassen.com/2016/03/code-regex-for-instagram-username-and-hashtags/
 REGEXES = {
@@ -61,6 +57,7 @@ def scrape_instagram(tags: List[str], total_count: int=50, existing: set=None):
     for tag in tags:
         yield from scrape_instagram_tag(tag, total_count)
 
+
 def main(tags, total_count, should_continue):
     def _single_tag_processing(tag, total_count, existing_links, start):
         os.makedirs(f'data/{tag}', exist_ok=True)
@@ -95,6 +92,7 @@ def main(tags, total_count, should_continue):
                     existing_links.add(row[1])
                 start = i + 1
         _single_tag_processing(tag, total_count, existing_links, start)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
